@@ -3,812 +3,511 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Tesla Dash</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-  :root {
-    --bg: #0a0a0f;
-    --panel: #0f0f1a;
-    --border: #1e2040;
-    --accent: #c8f000;
-    --accent2: #00e5ff;
-    --red: #ff3b5c;
-    --text: #e8eaf0;
-    --muted: #4a5070;
-    --glow: rgba(200, 240, 0, 0.15);
-  }
+:root{
+  --bg:#070b0f;
+  --panel:#0c1118;
+  --border:#1a2535;
+  --accent:#00d4ff;
+  --accent2:#c8f000;
+  --red:#ff3355;
+  --orange:#ff8c00;
+  --text:#dde8f0;
+  --muted:#3a5068;
+  --dim:#1e3045;
+}
 
-  html, body {
-    width: 100%; height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    overflow: hidden;
-    touch-action: manipulation;
-  }
+html,body{
+  width:100%;height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Exo 2',sans-serif;
+  overflow:hidden;
+  user-select:none;
+}
 
-  /* SETUP SCREEN */
-  #setup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 32px;
-    gap: 20px;
-  }
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
 
-  #setup h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
+#setup{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  height:100vh;padding:28px;gap:16px;
+}
 
-  #setup p {
-    color: var(--muted);
-    font-size: 1rem;
-    text-align: center;
-    line-height: 1.5;
-  }
+#setup h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.8rem;font-weight:900;
+  letter-spacing:0.2em;color:var(--accent);
+  text-shadow:0 0 30px rgba(0,212,255,0.5);
+  text-transform:uppercase;
+}
 
-  .input-group {
-    width: 100%;
-    max-width: 480px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+#setup p{color:var(--muted);font-size:0.9rem;text-align:center;}
 
-  .input-group label {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
+.field{width:100%;max-width:460px;display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:0.65rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
+.field input{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);
+  font-family:'Exo 2',monospace;font-size:0.75rem;
+  padding:10px 14px;outline:none;width:100%;
+  transition:border-color 0.2s;
+}
+.field input:focus{border-color:var(--accent);}
 
-  .input-group input, .input-group select {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.72rem;
-    padding: 10px 14px;
-    outline: none;
-    width: 100%;
-    transition: border-color 0.2s;
-  }
+.btn-connect{
+  width:100%;max-width:460px;
+  background:var(--accent);color:#070b0f;
+  border:none;border-radius:6px;
+  font-family:'Orbitron',sans-serif;
+  font-size:0.85rem;font-weight:700;
+  letter-spacing:0.15em;padding:14px;cursor:pointer;
+  text-transform:uppercase;
+  box-shadow:0 0 20px rgba(0,212,255,0.3);
+  transition:opacity 0.2s;
+}
+.btn-connect:active{opacity:0.7;}
 
-  .input-group input:focus {
-    border-color: var(--accent);
-  }
+#msg{font-size:0.8rem;color:var(--muted);text-align:center;min-height:18px;}
+#msg.err{color:var(--red);}
+#msg.ok{color:var(--accent2);}
 
-  .btn {
-    background: var(--accent);
-    color: #0a0a0f;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    padding: 14px 32px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: opacity 0.2s;
-    width: 100%;
-    max-width: 480px;
-  }
+.hint{font-size:0.7rem;color:var(--muted);text-align:center;line-height:1.6;max-width:460px;}
 
-  .btn:active { opacity: 0.7; }
+#dash{
+  position:relative;z-index:10;
+  display:none;flex-direction:column;
+  width:100vw;height:100vh;
+  padding:10px;gap:8px;
+}
 
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.85rem;
-    padding: 10px 24px;
-  }
+.topbar{
+  display:flex;align-items:center;
+  justify-content:space-between;padding:0 2px;
+}
 
-  #status-msg {
-    font-size: 0.85rem;
-    color: var(--muted);
-    text-align: center;
-    min-height: 20px;
-  }
+.car-name{
+  font-family:'Orbitron',sans-serif;
+  font-size:0.85rem;font-weight:700;
+  letter-spacing:0.15em;color:var(--accent);
+  text-transform:uppercase;
+}
 
-  #status-msg.error { color: var(--red); }
-  #status-msg.ok { color: var(--accent); }
+.dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--muted);
+  transition:background 0.3s,box-shadow 0.3s;
+  display:inline-block;margin-right:6px;
+}
+.dot.on{background:var(--accent2);box-shadow:0 0 8px var(--accent2);}
+.dot.off{background:var(--red);}
 
-  /* DASHBOARD */
-  #dash {
-    display: none;
-    width: 100vw;
-    height: 100vh;
-    display: none;
-    flex-direction: column;
-    padding: 12px;
-    gap: 10px;
-  }
+.time-str{font-family:'Orbitron',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;}
+.next-update{font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;margin-right:8px;}
 
-  /* TOP BAR */
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 4px;
-  }
+.btn-cfg{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);border-radius:4px;
+  padding:3px 8px;font-size:0.7rem;cursor:pointer;
+  font-family:'Exo 2',sans-serif;margin-left:8px;
+}
 
-  .car-name {
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
+.speed-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.speed-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+}
 
-  .update-info {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
+.speed-num{
+  font-family:'Orbitron',sans-serif;
+  font-size:5.5rem;font-weight:900;
+  line-height:1;letter-spacing:-3px;
+  color:var(--accent);
+  text-shadow:0 0 40px rgba(0,212,255,0.4);
+}
+.speed-unit{font-size:0.7rem;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.speed-gps{font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;margin-top:4px;}
+.speed-gps.active{color:var(--accent2);}
 
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--muted);
-    display: inline-block;
-    margin-right: 6px;
-  }
+.gear-box{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.gear-lbl{font-size:0.6rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
+.gear-val{
+  font-family:'Orbitron',sans-serif;
+  font-size:3.2rem;font-weight:900;line-height:1;
+  transition:color 0.3s,text-shadow 0.3s;color:var(--muted);
+}
+.gear-val.D{color:var(--accent);text-shadow:0 0 20px rgba(0,212,255,0.5);}
+.gear-val.R{color:var(--red);text-shadow:0 0 20px rgba(255,51,85,0.5);}
+.gear-val.N{color:var(--orange);}
 
-  .status-dot.online { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-  .status-dot.offline { background: var(--red); }
+.mid-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;}
 
-  /* MAIN GRID */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 10px;
-    flex: 1;
-  }
+.bat-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;gap:8px;
+}
 
-  /* SPEED CARD — full width */
-  .speed-card {
-    grid-column: 1 / -1;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-  }
+.card-hdr{font-size:0.6rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
 
-  .speed-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  }
+.bat-pct{
+  font-family:'Orbitron',sans-serif;
+  font-size:3rem;font-weight:700;line-height:1;
+  transition:color 0.5s;
+}
 
-  .speed-main {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.bat-bar-bg{background:var(--dim);border-radius:3px;height:5px;overflow:hidden;}
+.bat-bar{height:100%;border-radius:3px;background:var(--accent2);transition:width 1s ease,background 0.5s;}
+.bat-range{font-family:'Orbitron',monospace;font-size:0.7rem;color:var(--muted);letter-spacing:0.05em;}
 
-  .speed-value {
-    font-size: 5rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--accent);
-    text-shadow: 0 0 30px rgba(200,240,0,0.4);
-    letter-spacing: -2px;
-    transition: all 0.3s;
-  }
+.charge-badge{
+  display:none;
+  background:rgba(200,240,0,0.1);border:1px solid var(--accent2);
+  border-radius:20px;padding:2px 8px;
+  font-size:0.6rem;color:var(--accent2);letter-spacing:0.1em;
+  width:fit-content;animation:blink 1.5s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-  .speed-unit {
-    font-size: 0.9rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
+.info-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;
+}
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 0;border-bottom:1px solid var(--dim);
+}
+.info-row:last-child{border-bottom:none;}
+.info-k{font-size:0.62rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
+.info-v{font-family:'Orbitron',monospace;font-size:0.75rem;color:var(--text);letter-spacing:0.05em;}
+.info-v.hi{color:var(--accent);}
+.info-v.mid{color:var(--accent2);}
 
-  .gear-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
+.bot-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex-shrink:0;}
 
-  .gear-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
+.mini{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;padding:10px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.mini-ico{font-size:1.2rem;line-height:1;}
+.mini-lbl{font-size:0.5rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;text-align:center;}
+.mini-val{font-family:'Orbitron',monospace;font-size:0.7rem;color:var(--text);text-align:center;}
+.mini-val.red{color:var(--red);}
+.mini-val.grn{color:var(--accent2);}
 
-  .gear-value {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1;
-    transition: color 0.3s;
-  }
-
-  .gear-value.reverse { color: var(--red); }
-  .gear-value.drive { color: var(--accent2); }
-  .gear-value.park { color: var(--muted); }
-
-  /* BATTERY CARD */
-  .battery-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .card-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .battery-percent {
-    font-size: 2.8rem;
-    font-weight: 700;
-    line-height: 1;
-    transition: color 0.5s;
-  }
-
-  .battery-bar-wrap {
-    background: var(--border);
-    border-radius: 4px;
-    height: 6px;
-    overflow: hidden;
-  }
-
-  .battery-bar {
-    height: 100%;
-    border-radius: 4px;
-    background: var(--accent);
-    transition: width 0.8s ease, background 0.5s;
-  }
-
-  .battery-range {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-
-  /* INFO CARD */
-  .info-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .info-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .info-row:last-child { border-bottom: none; }
-
-  .info-key {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .info-val {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--text);
-  }
-
-  .info-val.accent { color: var(--accent); }
-  .info-val.red { color: var(--red); }
-  .info-val.blue { color: var(--accent2); }
-
-  /* BOTTOM ROW */
-  .bottom-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-
-  .mini-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .mini-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-  }
-
-  .mini-label {
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    text-transform: uppercase;
-    text-align: center;
-  }
-
-  .mini-val {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--text);
-    text-align: center;
-  }
-
-  /* CHARGING INDICATOR */
-  .charging-badge {
-    display: none;
-    background: rgba(200,240,0,0.1);
-    border: 1px solid var(--accent);
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* SLEEP OVERLAY */
-  #sleep-overlay {
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: rgba(10,10,15,0.92);
-    z-index: 10;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 16px;
-    backdrop-filter: blur(4px);
-  }
-
-  #sleep-overlay.show {
-    display: flex;
-  }
-
-  #sleep-overlay p {
-    color: var(--muted);
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-
-  .spin {
-    width: 40px; height: 40px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* Settings button */
-  .settings-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    font-family: 'Rajdhani', sans-serif;
-    letter-spacing: 0.1em;
-  }
-
-  .settings-btn:active { opacity: 0.6; }
+#sleep{
+  display:none;position:fixed;inset:0;z-index:20;
+  background:rgba(7,11,15,0.93);
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;backdrop-filter:blur(6px);
+}
+#sleep.show{display:flex;}
+#sleep p{color:var(--muted);font-size:0.9rem;letter-spacing:0.1em;text-align:center;}
+.spin{width:36px;height:36px;border:2px solid var(--dim);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
 
-<!-- SETUP SCREEN -->
 <div id="setup">
   <h1>⚡ Tesla Dash</h1>
-  <p>Введи данные для подключения к своей машине</p>
+  <p>Fleet API · GPS скорость · Личное использование</p>
 
-  <div class="input-group">
+  <div class="field">
     <label>Refresh Token</label>
-    <input type="text" id="inp-refresh" placeholder="eyJh..." autocomplete="off" spellcheck="false">
+    <input type="text" id="rt" placeholder="EU_c284..." spellcheck="false" autocomplete="off">
   </div>
 
-  <div class="input-group">
+  <div class="field">
     <label>Vehicle ID</label>
-    <input type="text" id="inp-vid" placeholder="1493071406010646" autocomplete="off">
+    <input type="text" id="vid" placeholder="1493071406010646" autocomplete="off">
   </div>
 
-  <div class="input-group">
-    <label>Регион</label>
-    <select id="inp-region">
-      <option value="https://owner-api.teslamotors.com">Глобальный (owner-api)</option>
-      <option value="https://fleet-api.prd.na.vn.cloud.tesla.com">Северная Америка (Fleet)</option>
-      <option value="https://fleet-api.prd.eu.vn.cloud.tesla.com">Европа (Fleet)</option>
-    </select>
-  </div>
-
-  <button class="btn" onclick="connect()">Подключиться</button>
-  <div id="status-msg"></div>
-  <button class="btn btn-outline" onclick="loadSaved()">Загрузить сохранённые данные</button>
+  <button class="btn-connect" onclick="connect()">Подключиться</button>
+  <div id="msg"></div>
+  <div class="hint">Скорость — GPS реального времени · Заряд и данные — каждые 5 минут</div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dash">
-  <div id="sleep-overlay">
+  <div id="sleep">
     <div class="spin"></div>
     <p>Машина спит...<br>Пробуждаю</p>
   </div>
 
   <div class="topbar">
     <div>
-      <span class="status-dot" id="dot"></span>
-      <span class="car-name" id="car-name">Tesla</span>
-      <span class="charging-badge" id="charging-badge">⚡ ЗАРЯД</span>
+      <span class="dot" id="dot"></span>
+      <span class="car-name" id="cname">Tesla</span>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="update-info" id="update-time">—</span>
-      <button class="settings-btn" onclick="showSetup()">⚙</button>
+    <div style="display:flex;align-items:center;">
+      <span class="next-update" id="nxt"></span>
+      <span class="time-str" id="clk">--:--:--</span>
+      <button class="btn-cfg" onclick="showSetup()">⚙</button>
     </div>
   </div>
 
-  <div class="main-grid">
-    <!-- SPEED -->
-    <div class="speed-card">
-      <div class="speed-main">
-        <div class="speed-value" id="speed">0</div>
-        <div class="speed-unit">км/ч</div>
-      </div>
-      <div class="gear-display">
-        <div class="gear-label">Передача</div>
-        <div class="gear-value park" id="gear">P</div>
-      </div>
+  <div class="speed-card">
+    <div>
+      <div class="speed-num" id="spd">0</div>
+      <div class="speed-unit">км/ч</div>
+      <div class="speed-gps" id="gpslbl">● GPS инициализация...</div>
+    </div>
+    <div class="gear-box">
+      <div class="gear-lbl">Режим</div>
+      <div class="gear-val" id="gear">P</div>
+    </div>
+  </div>
+
+  <div class="mid-row">
+    <div class="bat-card">
+      <div class="card-hdr">Батарея</div>
+      <div class="bat-pct" id="bpct">—%</div>
+      <div class="bat-bar-bg"><div class="bat-bar" id="bbar" style="width:0%"></div></div>
+      <div class="bat-range" id="brange">— км запаса</div>
+      <div class="charge-badge" id="cbadge">⚡ ЗАРЯД</div>
     </div>
 
-    <!-- BATTERY -->
-    <div class="battery-card">
-      <div class="card-label">Батарея</div>
-      <div class="battery-percent" id="battery-pct">—%</div>
-      <div class="battery-bar-wrap">
-        <div class="battery-bar" id="battery-bar" style="width:0%"></div>
-      </div>
-      <div class="battery-range" id="battery-range">— км запаса</div>
-    </div>
-
-    <!-- INFO -->
     <div class="info-card">
-      <div class="card-label">Данные</div>
+      <div class="card-hdr" style="margin-bottom:4px;">Данные</div>
       <div class="info-row">
-        <span class="info-key">Темп. салон</span>
-        <span class="info-val accent" id="temp-in">—°C</span>
+        <span class="info-k">Темп. салон</span>
+        <span class="info-v hi" id="tin">—°C</span>
       </div>
       <div class="info-row">
-        <span class="info-key">Темп. снаружи</span>
-        <span class="info-val" id="temp-out">—°C</span>
+        <span class="info-k">Темп. улица</span>
+        <span class="info-v" id="tout">—°C</span>
       </div>
       <div class="info-row">
-        <span class="info-key">Одометр</span>
-        <span class="info-val blue" id="odometer">— км</span>
+        <span class="info-k">Одометр</span>
+        <span class="info-v mid" id="odo">— км</span>
+      </div>
+      <div class="info-row">
+        <span class="info-k">Обновлено</span>
+        <span class="info-v" id="upd">—</span>
       </div>
     </div>
   </div>
 
-  <!-- BOTTOM ROW -->
-  <div class="bottom-row">
-    <div class="mini-card">
-      <div class="mini-icon">🔒</div>
-      <div class="mini-label">Замки</div>
-      <div class="mini-val" id="locks">—</div>
+  <div class="bot-row">
+    <div class="mini">
+      <div class="mini-ico">🔒</div>
+      <div class="mini-lbl">Замки</div>
+      <div class="mini-val" id="lck">—</div>
     </div>
-    <div class="mini-card">
-      <div class="mini-icon">🚪</div>
-      <div class="mini-label">Двери</div>
-      <div class="mini-val" id="doors">—</div>
+    <div class="mini">
+      <div class="mini-ico">🚪</div>
+      <div class="mini-lbl">Двери</div>
+      <div class="mini-val" id="drs">—</div>
     </div>
-    <div class="mini-card">
-      <div class="mini-icon">🌡️</div>
-      <div class="mini-label">Батарея</div>
-      <div class="mini-val" id="bat-temp">—°C</div>
-    </div>
-    <div class="mini-card">
-      <div class="mini-icon">⚡</div>
-      <div class="mini-label">Мощность</div>
-      <div class="mini-val" id="power">— кВт</div>
+    <div class="mini">
+      <div class="mini-ico">⚡</div>
+      <div class="mini-lbl">Заряд статус</div>
+      <div class="mini-val" id="cst">—</div>
     </div>
   </div>
 </div>
 
 <script>
-  const PROXY = 'https://nois123.balubalu456456.workers.dev';
+const PROXY = 'https://nois123.balubalu456456.workers.dev';
+const CLIENT_ID = 'a72ab671-8bc2-4470-9b7e-31de7fe81007';
+const CLIENT_SECRET = 'ta-secret.QNI3mfVtnFrtE9rt';
+const API_EU = 'https://fleet-api.prd.eu.vn.cloud.tesla.com';
+const UPD_MS = 5 * 60 * 1000;
 
-  function proxyUrl(url) {
-    return `${PROXY}?url=${encodeURIComponent(url)}`;
-  }
+let aToken = '', rToken = '', vId = '', vVin = '';
+let pollTmr = null, cdTmr = null, gpsWatch = null, cdSec = UPD_MS/1000;
 
-  let refreshToken = '';
-  let accessToken = '';
-  let vehicleId = '';
-  let baseUrl = '';
-  let updateTimer = null;
-  let carDisplayName = 'Tesla';
+const px = u => PROXY + '/?url=' + encodeURIComponent(u);
+const $  = id => document.getElementById(id);
 
-  function showSetup() {
-    document.getElementById('setup').style.display = 'flex';
-    document.getElementById('dash').style.display = 'none';
-    if (updateTimer) clearInterval(updateTimer);
-  }
+function msg(t, c='') { $('msg').textContent=t; $('msg').className=c; }
 
-  function setStatus(msg, type = '') {
-    const el = document.getElementById('status-msg');
-    el.textContent = msg;
-    el.className = type;
-  }
+function showSetup() {
+  $('setup').style.display='flex';
+  $('dash').style.display='none';
+  if(pollTmr) clearInterval(pollTmr);
+  if(cdTmr) clearInterval(cdTmr);
+  if(gpsWatch) navigator.geolocation.clearWatch(gpsWatch);
+}
 
-  function loadSaved() {
-    const saved = localStorage.getItem('tesla_dash_config');
-    if (saved) {
-      const cfg = JSON.parse(saved);
-      document.getElementById('inp-refresh').value = cfg.refresh || '';
-      document.getElementById('inp-vid').value = cfg.vid || '';
-      document.getElementById('inp-region').value = cfg.base || 'https://owner-api.teslamotors.com';
-      setStatus('Данные загружены', 'ok');
-    } else {
-      setStatus('Нет сохранённых данных', 'error');
+setInterval(()=>{
+  const n=new Date();
+  $('clk').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');
+},1000);
+
+async function doRefresh() {
+  const r = await fetch('https://auth.tesla.com/oauth2/v3/token',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({grant_type:'refresh_token',client_id:CLIENT_ID,client_secret:CLIENT_SECRET,refresh_token:rToken})
+  });
+  if(!r.ok) throw new Error('Токен: '+r.status);
+  const d=await r.json();
+  if(!d.access_token) throw new Error('Нет access_token');
+  aToken=d.access_token;
+  if(d.refresh_token){rToken=d.refresh_token;save();}
+}
+
+async function apig(path) {
+  let r=await fetch(px(API_EU+path),{headers:{'Authorization':'Bearer '+aToken}});
+  if(r.status===401){await doRefresh();r=await fetch(px(API_EU+path),{headers:{'Authorization':'Bearer '+aToken}});}
+  return r;
+}
+
+async function apip(path) {
+  let r=await fetch(px(API_EU+path),{method:'POST',headers:{'Authorization':'Bearer '+aToken,'Content-Type':'application/json'}});
+  if(r.status===401){await doRefresh();r=await fetch(px(API_EU+path),{method:'POST',headers:{'Authorization':'Bearer '+aToken,'Content-Type':'application/json'}});}
+  return r;
+}
+
+async function wake() {
+  $('sleep').classList.add('show');
+  try {
+    await apip('/api/1/vehicles/'+vVin+'/wake_up');
+    for(let i=0;i<20;i++){
+      await new Promise(r=>setTimeout(r,2500));
+      const r=await apig('/api/1/vehicles/'+vVin);
+      const d=await r.json();
+      if(d.response&&d.response.state==='online') break;
     }
+  } finally { $('sleep').classList.remove('show'); }
+}
+
+async function poll() {
+  try {
+    const r=await apig('/api/1/vehicles/'+vVin+'/vehicle_data?endpoints=charge_state%3Bclimate_state%3Bdrive_state%3Bvehicle_state');
+    if(r.status===408){await wake();return;}
+    const d=await r.json();
+    if(d.response) render(d.response);
+    $('dot').className='dot on';
+    cdSec=UPD_MS/1000;
+  } catch(e){
+    $('dot').className='dot off';
+    console.error(e);
   }
+}
 
-  async function getNewAccessToken(rToken, base) {
-    const resp = await fetch(proxyUrl('https://auth.tesla.com/oauth2/v3/token'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        grant_type: 'refresh_token',
-        client_id: 'ownerapi',
-        refresh_token: rToken,
-        scope: 'openid email offline_access'
-      })
-    });
-    if (!resp.ok) throw new Error('Ошибка обновления токена: ' + resp.status);
-    const data = await resp.json();
-    return data.access_token;
-  }
+function startCD() {
+  if(cdTmr) clearInterval(cdTmr);
+  cdSec=UPD_MS/1000;
+  cdTmr=setInterval(()=>{
+    cdSec--;
+    const m=Math.floor(cdSec/60), s=cdSec%60;
+    $('nxt').textContent='обн '+m+':'+String(s).padStart(2,'0')+' · ';
+    if(cdSec<=0) cdSec=UPD_MS/1000;
+  },1000);
+}
 
-  async function wakeVehicle() {
-    document.getElementById('sleep-overlay').classList.add('show');
-    try {
-      await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}/wake_up`), {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
-      });
-      // Wait for wake
-      for (let i = 0; i < 20; i++) {
-        await new Promise(r => setTimeout(r, 2000));
-        const check = await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}`), {
-          headers: { 'Authorization': 'Bearer ' + accessToken }
-        });
-        const d = await check.json();
-        if (d.response && d.response.state === 'online') break;
-      }
-    } finally {
-      document.getElementById('sleep-overlay').classList.remove('show');
-    }
-  }
+function render(r) {
+  const now=new Date();
+  $('upd').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
 
-  async function connect() {
-    const rToken = document.getElementById('inp-refresh').value.trim();
-    const vid = document.getElementById('inp-vid').value.trim();
-    const base = document.getElementById('inp-region').value;
+  const ch=r.charge_state||{};
+  const pct=ch.battery_level||0;
+  const km=Math.round((ch.est_battery_range||ch.battery_range||0)*1.60934);
+  $('bpct').textContent=pct+'%';
+  $('brange').textContent=km+' км запаса';
+  $('bbar').style.width=pct+'%';
+  $('bbar').style.background=pct>50?'var(--accent2)':pct>20?'var(--orange)':'var(--red)';
+  $('bpct').style.color=pct>50?'var(--accent2)':pct>20?'var(--orange)':'var(--red)';
 
-    if (!rToken || !vid) {
-      setStatus('Заполни все поля', 'error');
-      return;
-    }
+  const isCh=ch.charging_state==='Charging';
+  $('cbadge').style.display=isCh?'block':'none';
+  $('cst').textContent=isCh?'Заряжается':ch.charging_state==='Complete'?'Заряжен':ch.charging_state==='Disconnected'?'Откл.':ch.charging_state||'—';
+  $('cst').className='mini-val'+(isCh?' grn':'');
 
-    setStatus('Получаю access token...', '');
+  const cl=r.climate_state||{};
+  $('tin').textContent=cl.inside_temp!=null?cl.inside_temp.toFixed(1)+'°C':'—°C';
+  $('tout').textContent=cl.outside_temp!=null?cl.outside_temp.toFixed(1)+'°C':'—°C';
 
-    try {
-      const aToken = await getNewAccessToken(rToken, base);
+  const dr=r.drive_state||{};
+  const sh=dr.shift_state||'P';
+  const ge=$('gear');
+  ge.textContent=sh;
+  ge.className='gear-val '+sh;
 
-      setStatus('Проверяю машину...', '');
+  const vs=r.vehicle_state||{};
+  $('odo').textContent=vs.odometer?Math.round(vs.odometer*1.60934).toLocaleString('ru')+' км':'— км';
 
-      // Get vehicle info
-      const vResp = await fetch(proxyUrl(`${base}/api/1/vehicles`), {
-        headers: { 'Authorization': 'Bearer ' + aToken }
-      });
-      const vData = await vResp.json();
+  const lk=$('lck');
+  lk.textContent=vs.locked==null?'—':vs.locked?'Закрыт':'Открыт';
+  lk.className='mini-val'+(vs.locked===false?' red':'');
 
-      if (!vData.response || vData.response.length === 0) {
-        setStatus('Машины не найдены в аккаунте', 'error');
-        return;
-      }
+  const ao=vs.df||vs.dr||vs.pf||vs.pr||vs.ft||vs.rt;
+  const dr2=$('drs');
+  dr2.textContent=ao?'Открыты':'Закрыты';
+  dr2.className='mini-val'+(ao?' red':' grn');
+}
 
-      // Find vehicle
-      const vehicle = vData.response.find(v => String(v.id) === String(vid)) || vData.response[0];
-      carDisplayName = vehicle.display_name || 'Tesla';
+function gps() {
+  if(!navigator.geolocation) return;
+  gpsWatch=navigator.geolocation.watchPosition(p=>{
+    const kmh=Math.round((p.coords.speed||0)*3.6);
+    $('spd').textContent=kmh;
+    $('gpslbl').textContent='● GPS активен';
+    $('gpslbl').className='speed-gps active';
+  },()=>{
+    $('gpslbl').textContent='● GPS недоступен';
+    $('gpslbl').className='speed-gps';
+  },{enableHighAccuracy:true,maximumAge:1000,timeout:5000});
+}
 
-      // Save config
-      refreshToken = rToken;
-      accessToken = aToken;
-      vehicleId = String(vehicle.id);
-      baseUrl = base;
+function save() {
+  localStorage.setItem('tdc',JSON.stringify({rt:rToken,vid:vId,vin:vVin}));
+}
 
-      localStorage.setItem('tesla_dash_config', JSON.stringify({ refresh: rToken, vid: vehicleId, base }));
+async function connect() {
+  const rt=$('rt').value.trim();
+  const vid=$('vid').value.trim();
+  if(!rt||!vid){msg('Заполни все поля','err');return;}
+  msg('Получаю токен...');
+  rToken=rt; vId=vid;
+  try {
+    await doRefresh();
+    msg('Ищу машину...');
+    const vr=await apig('/api/1/vehicles');
+    const vd=await vr.json();
+    if(!vd.response||!vd.response.length){msg('Машины не найдены','err');return;}
+    const v=vd.response.find(x=>String(x.id)===String(vid))||vd.response[0];
+    vVin=v.vin; vId=String(v.id);
+    $('cname').textContent=v.display_name||'Tesla';
+    save();
+    $('setup').style.display='none';
+    $('dash').style.display='flex';
+    gps();
+    if(v.state!=='online') await wake();
+    await poll();
+    startCD();
+    pollTmr=setInterval(async()=>{await poll();startCD();},UPD_MS);
+  } catch(e){msg('Ошибка: '+e.message,'err');}
+}
 
-      // Show dash
-      document.getElementById('setup').style.display = 'none';
-      document.getElementById('dash').style.display = 'flex';
-      document.getElementById('car-name').textContent = carDisplayName;
-
-      // Wake if needed
-      if (vehicle.state !== 'online') {
-        await wakeVehicle();
-      }
-
-      // Start polling
-      await fetchData();
-      updateTimer = setInterval(fetchData, 3000);
-
-    } catch (e) {
-      setStatus('Ошибка: ' + e.message, 'error');
-    }
-  }
-
-  async function fetchData() {
-    try {
-      // Refresh token if needed
-      let headers = { 'Authorization': 'Bearer ' + accessToken };
-
-      const resp = await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}/vehicle_data`), { headers });
-
-      if (resp.status === 401) {
-        // Token expired, refresh
-        accessToken = await getNewAccessToken(refreshToken, baseUrl);
-        headers = { 'Authorization': 'Bearer ' + accessToken };
-        const resp2 = await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}/vehicle_data`), { headers });
-        updateDash(await resp2.json());
-      } else if (resp.status === 408) {
-        // Car asleep
-        await wakeVehicle();
-        return;
-      } else {
-        updateDash(await resp.json());
-      }
-
-    } catch (e) {
-      document.getElementById('dot').className = 'status-dot offline';
-      console.error(e);
-    }
-  }
-
-  function updateDash(data) {
-    if (!data.response) return;
-    const r = data.response;
-
-    document.getElementById('dot').className = 'status-dot online';
-
-    const now = new Date();
-    document.getElementById('update-time').textContent =
-      now.getHours().toString().padStart(2,'0') + ':' +
-      now.getMinutes().toString().padStart(2,'0') + ':' +
-      now.getSeconds().toString().padStart(2,'0');
-
-    // Drive state
-    const drive = r.drive_state || {};
-    const speedMs = drive.speed || 0;
-    const speedKmh = Math.round(speedMs * 3.6);
-    document.getElementById('speed').textContent = speedKmh;
-
-    const gearEl = document.getElementById('gear');
-    const shift = drive.shift_state || 'P';
-    gearEl.textContent = shift || 'P';
-    gearEl.className = 'gear-value ' +
-      (shift === 'R' ? 'reverse' : shift === 'D' ? 'drive' : 'park');
-
-    // Power kW
-    const powerKw = drive.power ? Math.round(drive.power) : 0;
-    document.getElementById('power').textContent = (powerKw > 0 ? '+' : '') + powerKw + ' кВт';
-
-    // Charge state
-    const charge = r.charge_state || {};
-    const pct = charge.battery_level || 0;
-    const range = charge.est_battery_range
-      ? Math.round(charge.est_battery_range * 1.60934)
-      : (charge.battery_range ? Math.round(charge.battery_range * 1.60934) : 0);
-
-    document.getElementById('battery-pct').textContent = pct + '%';
-    document.getElementById('battery-range').textContent = range + ' км запаса';
-
-    const bar = document.getElementById('battery-bar');
-    bar.style.width = pct + '%';
-    bar.style.background = pct > 50 ? 'var(--accent)' : pct > 20 ? '#ffb300' : 'var(--red)';
-
-    const pctEl = document.getElementById('battery-pct');
-    pctEl.style.color = pct > 50 ? 'var(--accent)' : pct > 20 ? '#ffb300' : 'var(--red)';
-
-    const isCharging = charge.charging_state === 'Charging';
-    document.getElementById('charging-badge').style.display = isCharging ? 'inline-block' : 'none';
-
-    // Climate
-    const climate = r.climate_state || {};
-    const tempIn = climate.inside_temp != null ? climate.inside_temp.toFixed(1) + '°C' : '—°C';
-    const tempOut = climate.outside_temp != null ? climate.outside_temp.toFixed(1) + '°C' : '—°C';
-    document.getElementById('temp-in').textContent = tempIn;
-    document.getElementById('temp-out').textContent = tempOut;
-
-    // Vehicle state
-    const vs = r.vehicle_state || {};
-    const odo = vs.odometer ? Math.round(vs.odometer * 1.60934).toLocaleString('ru') + ' км' : '— км';
-    document.getElementById('odometer').textContent = odo;
-
-    const locked = vs.locked;
-    const lockEl = document.getElementById('locks');
-    lockEl.textContent = locked == null ? '—' : locked ? 'Закрыт' : 'Открыт';
-    lockEl.className = 'mini-val ' + (locked ? '' : 'red');
-
-    // Doors
-    const anyOpen = vs.df || vs.dr || vs.pf || vs.pr;
-    const doorsEl = document.getElementById('doors');
-    doorsEl.textContent = anyOpen ? 'Открыты' : 'Закрыты';
-    doorsEl.className = 'mini-val ' + (anyOpen ? 'red' : '');
-
-    // Battery temp
-    const batTemp = charge.battery_heater_on != null
-      ? (charge.battery_heater_on ? 'Прогрев' : '—') : '—';
-    document.getElementById('bat-temp').textContent = batTemp;
-  }
-
-  // Auto-load on start
-  window.onload = () => {
-    const saved = localStorage.getItem('tesla_dash_config');
-    if (saved) {
-      const cfg = JSON.parse(saved);
-      document.getElementById('inp-refresh').value = cfg.refresh || '';
-      document.getElementById('inp-vid').value = cfg.vid || '';
-      if (cfg.base) document.getElementById('inp-region').value = cfg.base;
-    }
-  };
+window.onload=()=>{
+  const s=localStorage.getItem('tdc');
+  if(s){const c=JSON.parse(s);if(c.rt)$('rt').value=c.rt;if(c.vid)$('vid').value=c.vid;}
+};
 </script>
 </body>
 </html>
