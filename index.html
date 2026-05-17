@@ -561,6 +561,12 @@
 </div>
 
 <script>
+  const PROXY = 'https://nois123.balubalu456456.workers.dev';
+
+  function proxyUrl(url) {
+    return `${PROXY}?url=${encodeURIComponent(url)}`;
+  }
+
   let refreshToken = '';
   let accessToken = '';
   let vehicleId = '';
@@ -594,7 +600,7 @@
   }
 
   async function getNewAccessToken(rToken, base) {
-    const resp = await fetch('https://auth.tesla.com/oauth2/v3/token', {
+    const resp = await fetch(proxyUrl('https://auth.tesla.com/oauth2/v3/token'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -612,14 +618,14 @@
   async function wakeVehicle() {
     document.getElementById('sleep-overlay').classList.add('show');
     try {
-      await fetch(`${baseUrl}/api/1/vehicles/${vehicleId}/wake_up`, {
+      await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}/wake_up`), {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
       });
       // Wait for wake
       for (let i = 0; i < 20; i++) {
         await new Promise(r => setTimeout(r, 2000));
-        const check = await fetch(`${baseUrl}/api/1/vehicles/${vehicleId}`, {
+        const check = await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}`), {
           headers: { 'Authorization': 'Bearer ' + accessToken }
         });
         const d = await check.json();
@@ -648,7 +654,7 @@
       setStatus('Проверяю машину...', '');
 
       // Get vehicle info
-      const vResp = await fetch(`${base}/api/1/vehicles`, {
+      const vResp = await fetch(proxyUrl(`${base}/api/1/vehicles`), {
         headers: { 'Authorization': 'Bearer ' + aToken }
       });
       const vData = await vResp.json();
@@ -694,13 +700,13 @@
       // Refresh token if needed
       let headers = { 'Authorization': 'Bearer ' + accessToken };
 
-      const resp = await fetch(`${baseUrl}/api/1/vehicles/${vehicleId}/vehicle_data`, { headers });
+      const resp = await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}/vehicle_data`), { headers });
 
       if (resp.status === 401) {
         // Token expired, refresh
         accessToken = await getNewAccessToken(refreshToken, baseUrl);
         headers = { 'Authorization': 'Bearer ' + accessToken };
-        const resp2 = await fetch(`${baseUrl}/api/1/vehicles/${vehicleId}/vehicle_data`, { headers });
+        const resp2 = await fetch(proxyUrl(`${baseUrl}/api/1/vehicles/${vehicleId}/vehicle_data`), { headers });
         updateDash(await resp2.json());
       } else if (resp.status === 408) {
         // Car asleep
