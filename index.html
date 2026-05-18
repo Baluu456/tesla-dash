@@ -5,150 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Tesla Dash</title>
 <link rel="manifest" href="/tesla-dash/manifest.json">
 <meta name="theme-color" content="#070b0f">
+<title>Tesla Dash</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
-
 *{margin:0;padding:0;box-sizing:border-box;}
-
 :root{
-  --bg:#070b0f;
-  --panel:#0c1118;
-  --border:#1a2535;
-  --accent:#00d4ff;
-  --accent2:#c8f000;
-  --red:#ff3355;
-  --orange:#ff8c00;
-  --text:#dde8f0;
-  --muted:#3a5068;
-  --dim:#1e3045;
+  --bg:#070b0f;--panel:#0c1118;--border:#1a2535;
+  --accent:#00d4ff;--accent2:#c8f000;--red:#ff3355;
+  --orange:#ff8c00;--text:#dde8f0;--muted:#3a5068;--dim:#1e3045;
 }
-
-html,body{
-  width:100%;height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Exo 2',sans-serif;
-  overflow:hidden;
-  user-select:none;
-}
-
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;z-index:0;
-}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;overflow:hidden;user-select:none;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 
 /* SETUP */
-#setup{
-  position:relative;z-index:10;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  height:100vh;padding:20px;gap:12px;
-}
-#setup h1{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;letter-spacing:0.2em;color:var(--accent);text-shadow:0 0 30px rgba(0,212,255,0.5);text-transform:uppercase;}
-#setup p{color:var(--muted);font-size:0.85rem;text-align:center;}
-.field{width:100%;max-width:420px;display:flex;flex-direction:column;gap:5px;}
+#setup{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:20px;gap:12px;}
+#setup h1{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;letter-spacing:0.2em;color:var(--accent);text-shadow:0 0 30px rgba(0,212,255,0.5);text-transform:uppercase;}
+.field{width:100%;max-width:400px;display:flex;flex-direction:column;gap:5px;}
 .field label{font-size:0.6rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
-.field input{background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',monospace;font-size:0.72rem;padding:9px 12px;outline:none;width:100%;transition:border-color 0.2s;}
+.field input{background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',monospace;font-size:0.72rem;padding:9px 12px;outline:none;width:100%;}
 .field input:focus{border-color:var(--accent);}
-.btn-connect{width:100%;max-width:420px;background:var(--accent);color:#070b0f;border:none;border-radius:6px;font-family:'Orbitron',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.15em;padding:12px;cursor:pointer;text-transform:uppercase;box-shadow:0 0 20px rgba(0,212,255,0.3);}
-#msg{font-size:0.75rem;color:var(--muted);text-align:center;min-height:16px;}
+.btn-connect{width:100%;max-width:400px;background:var(--accent);color:#070b0f;border:none;border-radius:6px;font-family:'Orbitron',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.15em;padding:12px;cursor:pointer;text-transform:uppercase;}
+#msg{font-size:0.72rem;color:var(--muted);text-align:center;min-height:16px;}
 #msg.err{color:var(--red);}
-#msg.ok{color:var(--accent2);}
 
-/* DASHBOARD */
-#dash{
-  position:relative;z-index:10;
-  display:none;flex-direction:column;
-  width:100vw;height:100vh;
-  padding:6px 8px;gap:5px;
-}
+/* DASHBOARD - вертикальная колонка */
+#dash{position:relative;z-index:10;display:none;flex-direction:column;width:100%;height:100vh;padding:5px 6px;gap:4px;}
 
 /* TOP BAR */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 2px;flex-shrink:0;}
-.car-name{font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--accent);text-transform:uppercase;}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--muted);display:inline-block;margin-right:5px;transition:background 0.3s,box-shadow 0.3s;}
-.dot.on{background:var(--accent2);box-shadow:0 0 6px var(--accent2);}
+.topbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.car-name{font-family:'Orbitron',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;color:var(--accent);text-transform:uppercase;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--muted);display:inline-block;margin-right:4px;transition:background 0.3s;}
+.dot.on{background:var(--accent2);box-shadow:0 0 5px var(--accent2);}
 .dot.off{background:var(--red);}
-.topright{display:flex;align-items:center;gap:6px;}
-.time-str{font-family:'Orbitron',monospace;font-size:0.6rem;color:var(--muted);}
-.nxt{font-size:0.55rem;color:var(--muted);}
-.btn-cfg{background:none;border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:2px 6px;font-size:0.65rem;cursor:pointer;}
+.topright{display:flex;align-items:center;gap:5px;}
+.time-str{font-family:'Orbitron',monospace;font-size:0.55rem;color:var(--muted);}
+.nxt{font-size:0.5rem;color:var(--muted);}
+.btn-cfg{background:none;border:1px solid var(--border);color:var(--muted);border-radius:3px;padding:1px 5px;font-size:0.6rem;cursor:pointer;}
 
-/* MAIN ROW */
-.main-row{display:flex;gap:5px;flex:1;min-height:0;}
-
-/* LEFT - SPEED */
-.speed-panel{
-  background:var(--panel);border:1px solid var(--border);border-radius:10px;
-  padding:10px 12px;display:flex;flex-direction:column;
-  justify-content:space-between;width:200px;flex-shrink:0;
-  position:relative;overflow:hidden;
-}
-.speed-panel::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
-.speed-num{font-family:'Orbitron',sans-serif;font-size:5rem;font-weight:900;line-height:1;letter-spacing:-3px;color:var(--accent);text-shadow:0 0 30px rgba(0,212,255,0.4);}
-.speed-unit{font-size:0.6rem;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;}
-.speed-gps{font-size:0.55rem;color:var(--muted);margin-top:3px;}
+/* SPEED ROW */
+.speed-row{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 10px;flex-shrink:0;position:relative;overflow:hidden;}
+.speed-row::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.speed-left{display:flex;align-items:baseline;gap:6px;}
+.speed-num{font-family:'Orbitron',sans-serif;font-size:3.8rem;font-weight:900;line-height:1;letter-spacing:-2px;color:var(--accent);text-shadow:0 0 25px rgba(0,212,255,0.4);}
+.speed-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.speed-unit{font-size:0.55rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
+.speed-gps{font-size:0.5rem;color:var(--muted);}
 .speed-gps.active{color:var(--accent2);}
-.gear-box{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
-.gear-lbl{font-size:0.55rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;}
-.gear-val{font-family:'Orbitron',sans-serif;font-size:2.8rem;font-weight:900;line-height:1;color:var(--muted);transition:color 0.3s,text-shadow 0.3s;}
-.gear-val.D{color:var(--accent);text-shadow:0 0 15px rgba(0,212,255,0.5);}
-.gear-val.R{color:var(--red);text-shadow:0 0 15px rgba(255,51,85,0.5);}
+.gear-box{display:flex;flex-direction:column;align-items:center;}
+.gear-lbl{font-size:0.5rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;}
+.gear-val{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;line-height:1;color:var(--muted);transition:color 0.3s;}
+.gear-val.D{color:var(--accent);text-shadow:0 0 12px rgba(0,212,255,0.5);}
+.gear-val.R{color:var(--red);text-shadow:0 0 12px rgba(255,51,85,0.5);}
 .gear-val.N{color:var(--orange);}
 
-/* RIGHT PANEL */
-.right-panel{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;}
-
 /* BATTERY */
-.bat-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
-.card-hdr{font-size:0.55rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
-.bat-row{display:flex;align-items:baseline;gap:8px;}
-.bat-pct{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:700;line-height:1;transition:color 0.5s;}
-.bat-range{font-family:'Orbitron',monospace;font-size:0.65rem;color:var(--muted);}
+.bat-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:7px 10px;flex-shrink:0;}
+.card-hdr{font-size:0.5rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.bat-main{display:flex;align-items:baseline;gap:8px;margin-bottom:4px;}
+.bat-pct{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:700;line-height:1;transition:color 0.5s;}
+.bat-range{font-family:'Orbitron',monospace;font-size:0.65rem;color:var(--muted);white-space:nowrap;}
 .bat-bar-bg{background:var(--dim);border-radius:3px;height:4px;overflow:hidden;}
 .bat-bar{height:100%;border-radius:3px;background:var(--accent2);transition:width 1s ease,background 0.5s;}
-.charge-badge{display:none;background:rgba(200,240,0,0.1);border:1px solid var(--accent2);border-radius:20px;padding:1px 7px;font-size:0.55rem;color:var(--accent2);width:fit-content;animation:blink 1.5s infinite;}
+.charge-badge{display:none;background:rgba(200,240,0,0.1);border:1px solid var(--accent2);border-radius:10px;padding:1px 6px;font-size:0.5rem;color:var(--accent2);animation:blink 1.5s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-/* INFO + CAR ROW */
-.info-car-row{display:flex;gap:5px;flex:1;min-height:0;}
+/* INFO + CAR */
+.bottom-row{display:flex;gap:4px;flex:1;min-height:0;}
 
-/* INFO */
-.info-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;justify-content:space-around;flex:1;}
-.info-row{display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--dim);}
+.info-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 8px;display:flex;flex-direction:column;justify-content:space-around;flex:1;min-width:0;}
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--dim);}
 .info-row:last-child{border-bottom:none;}
-.info-k{font-size:0.55rem;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase;}
-.info-v{font-family:'Orbitron',monospace;font-size:0.68rem;color:var(--text);}
+.info-k{font-size:0.5rem;letter-spacing:0.06em;color:var(--muted);text-transform:uppercase;white-space:nowrap;}
+.info-v{font-family:'Orbitron',monospace;font-size:0.62rem;color:var(--text);white-space:nowrap;}
 .info-v.hi{color:var(--accent);}
 .info-v.mid{color:var(--accent2);}
-
-/* CAR SVG CARD */
-.car-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:160px;flex-shrink:0;}
-.car-card-hdr{font-size:0.55rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.info-v.red{color:var(--red);}
+.info-v.grn{color:var(--accent2);}
 
 /* CAR SVG */
-.car-svg{width:100%;max-width:140px;}
+.car-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;width:110px;flex-shrink:0;}
+.car-card-hdr{font-size:0.48rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;}
+.car-svg{width:90px;}
 .car-body{fill:#1a2535;stroke:#2a3f5a;stroke-width:1.5;}
 .car-roof{fill:#0f1820;}
-.car-window{fill:#0a1520;stroke:#1a3045;stroke-width:1;}
+.car-window{fill:#0a1520;stroke:#1a3045;stroke-width:0.8;}
 .door{fill:#1a2535;stroke:#2a3f5a;stroke-width:1;transition:fill 0.3s,stroke 0.3s;}
-.door.open{fill:rgba(255,51,85,0.3);stroke:#ff3355;stroke-width:1.5;}
-.door-line{stroke:#2a3f5a;stroke-width:0.8;fill:none;}
-.wheel{fill:#0a0f15;stroke:#2a3f5a;stroke-width:1;}
-.wheel-rim{fill:none;stroke:#3a5068;stroke-width:0.8;}
-.lock-indicator{transition:fill 0.3s;}
-.lock-indicator.locked{fill:var(--accent2);}
-.lock-indicator.unlocked{fill:var(--red);}
+.door.open{fill:rgba(255,51,85,0.25);stroke:#ff3355;stroke-width:1.5;}
+.door-line{stroke:#2a3f5a;stroke-width:0.6;fill:none;}
+.wheel{fill:#0a0f15;stroke:#2a3f5a;stroke-width:0.8;}
+.wheel-rim{fill:none;stroke:#3a5068;stroke-width:0.6;}
+.lock-ind{transition:fill 0.3s;}
+.lock-ind.locked{fill:var(--accent2);}
+.lock-ind.unlocked{fill:var(--red);}
 
 /* SLEEP */
-#sleep{display:none;position:fixed;inset:0;z-index:20;background:rgba(7,11,15,0.93);align-items:center;justify-content:center;flex-direction:column;gap:14px;backdrop-filter:blur(6px);}
+#sleep{display:none;position:fixed;inset:0;z-index:20;background:rgba(7,11,15,0.93);align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 #sleep.show{display:flex;}
-#sleep p{color:var(--muted);font-size:0.85rem;letter-spacing:0.1em;text-align:center;}
-.spin{width:32px;height:32px;border:2px solid var(--dim);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+#sleep p{color:var(--muted);font-size:0.8rem;text-align:center;}
+.spin{width:28px;height:28px;border:2px solid var(--dim);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
@@ -156,9 +112,8 @@ body::before{
 
 <div id="setup">
   <h1>⚡ Tesla Dash</h1>
-  <p>Fleet API · GPS скорость · Личное использование</p>
-  <div class="field"><label>Refresh Token</label><input type="text" id="rt" placeholder="EU_c284..." spellcheck="false" autocomplete="off"></div>
-  <div class="field"><label>Vehicle ID</label><input type="text" id="vid" placeholder="1493071406010646" autocomplete="off"></div>
+  <div class="field"><label>Refresh Token</label><input type="text" id="rt" placeholder="EU_..." spellcheck="false" autocomplete="off"></div>
+  <div class="field"><label>Vehicle ID</label><input type="text" id="vid" placeholder="1493071..." autocomplete="off"></div>
   <button class="btn-connect" onclick="connect()">Подключиться</button>
   <div id="msg"></div>
 </div>
@@ -166,122 +121,82 @@ body::before{
 <div id="dash">
   <div id="sleep"><div class="spin"></div><p>Машина спит...<br>Пробуждаю</p></div>
 
+  <!-- TOP BAR -->
   <div class="topbar">
     <div><span class="dot" id="dot"></span><span class="car-name" id="cname">Tesla</span></div>
     <div class="topright">
       <span class="nxt" id="nxt"></span>
-      <span class="time-str" id="clk">--:--:--</span>
+      <span class="time-str" id="clk">--:--</span>
       <button class="btn-cfg" onclick="showSetup()">⚙</button>
     </div>
   </div>
 
-  <div class="main-row">
-    <!-- SPEED -->
-    <div class="speed-panel">
+  <!-- SPEED -->
+  <div class="speed-row">
+    <div class="speed-left">
+      <div class="speed-num" id="spd">0</div>
       <div>
-        <div class="speed-num" id="spd">0</div>
         <div class="speed-unit">км/ч</div>
         <div class="speed-gps" id="gpslbl">● GPS...</div>
       </div>
-      <div class="gear-box">
-        <div class="gear-lbl">Режим</div>
-        <div class="gear-val" id="gear">P</div>
-      </div>
+    </div>
+    <div class="gear-box">
+      <div class="gear-lbl">Режим</div>
+      <div class="gear-val" id="gear">P</div>
+    </div>
+  </div>
+
+  <!-- BATTERY -->
+  <div class="bat-card">
+    <div class="card-hdr">Батарея <span class="charge-badge" id="cbadge">⚡ ЗАРЯД</span></div>
+    <div class="bat-main">
+      <div class="bat-pct" id="bpct">—%</div>
+      <div class="bat-range" id="brange">— км запаса</div>
+    </div>
+    <div class="bat-bar-bg"><div class="bat-bar" id="bbar" style="width:0%"></div></div>
+  </div>
+
+  <!-- BOTTOM: INFO + CAR -->
+  <div class="bottom-row">
+    <div class="info-card">
+      <div class="info-row"><span class="info-k">Темп. салон</span><span class="info-v hi" id="tin">—°C</span></div>
+      <div class="info-row"><span class="info-k">Темп. улица</span><span class="info-v" id="tout">—°C</span></div>
+      <div class="info-row"><span class="info-k">Одометр</span><span class="info-v mid" id="odo">—</span></div>
+      <div class="info-row"><span class="info-k">Обновлено</span><span class="info-v" id="upd">—</span></div>
+      <div class="info-row"><span class="info-k">Заряд</span><span class="info-v" id="cst">—</span></div>
+      <div class="info-row"><span class="info-k">Замки</span><span class="info-v" id="lck">—</span></div>
     </div>
 
-    <!-- RIGHT -->
-    <div class="right-panel">
-      <!-- BATTERY -->
-      <div class="bat-card">
-        <div class="card-hdr">Батарея <span class="charge-badge" id="cbadge">⚡ ЗАРЯД</span></div>
-        <div class="bat-row">
-          <div class="bat-pct" id="bpct">—%</div>
-          <div class="bat-range" id="brange">— км запаса</div>
-        </div>
-        <div class="bat-bar-bg"><div class="bat-bar" id="bbar" style="width:0%"></div></div>
-      </div>
-
-      <!-- INFO + CAR -->
-      <div class="info-car-row">
-        <div class="info-card">
-          <div class="info-row"><span class="info-k">Темп. салон</span><span class="info-v hi" id="tin">—°C</span></div>
-          <div class="info-row"><span class="info-k">Темп. улица</span><span class="info-v" id="tout">—°C</span></div>
-          <div class="info-row"><span class="info-k">Одометр</span><span class="info-v mid" id="odo">— км</span></div>
-          <div class="info-row"><span class="info-k">Обновлено</span><span class="info-v" id="upd">—</span></div>
-          <div class="info-row"><span class="info-k">Заряд статус</span><span class="info-v" id="cst">—</span></div>
-        </div>
-
-        <!-- CAR VISUAL -->
-        <div class="car-card">
-          <div class="car-card-hdr">Статус машины</div>
-          <svg class="car-svg" viewBox="0 0 140 220" xmlns="http://www.w3.org/2000/svg">
-            <!-- Wheels -->
-            <ellipse cx="22" cy="52" rx="12" ry="8" class="wheel"/>
-            <ellipse cx="22" cy="52" rx="7" ry="4" class="wheel-rim"/>
-            <ellipse cx="118" cy="52" rx="12" ry="8" class="wheel"/>
-            <ellipse cx="118" cy="52" rx="7" ry="4" class="wheel-rim"/>
-            <ellipse cx="22" cy="168" rx="12" ry="8" class="wheel"/>
-            <ellipse cx="22" cy="168" rx="7" ry="4" class="wheel-rim"/>
-            <ellipse cx="118" cy="168" rx="12" ry="8" class="wheel"/>
-            <ellipse cx="118" cy="168" rx="7" ry="4" class="wheel-rim"/>
-
-            <!-- Car body -->
-            <rect x="30" y="30" width="80" height="160" rx="14" class="car-body"/>
-
-            <!-- Doors -->
-            <rect id="door-fl" x="32" y="55" width="34" height="52" rx="3" class="door"/>
-            <rect id="door-fr" x="74" y="55" width="34" height="52" rx="3" class="door"/>
-            <rect id="door-rl" x="32" y="113" width="34" height="48" rx="3" class="door"/>
-            <rect id="door-rr" x="74" y="113" width="34" height="48" rx="3" class="door"/>
-
-            <!-- Door lines (center) -->
-            <line x1="70" y1="55" x2="70" y2="161" class="door-line"/>
-            <line x1="32" y1="107" x2="108" y2="107" class="door-line"/>
-
-            <!-- Windows -->
-            <rect x="36" y="59" width="28" height="38" rx="3" class="car-window"/>
-            <rect x="76" y="59" width="28" height="38" rx="3" class="car-window"/>
-            <rect x="36" y="116" width="28" height="32" rx="3" class="car-window"/>
-            <rect x="76" y="116" width="28" height="32" rx="3" class="car-window"/>
-
-            <!-- Roof -->
-            <rect x="38" y="30" width="64" height="26" rx="8" class="car-roof"/>
-
-            <!-- Front -->
-            <rect x="42" y="32" width="56" height="10" rx="4" class="car-window"/>
-
-            <!-- Trunk -->
-            <rect x="42" y="155" width="56" height="12" rx="4" class="car-window"/>
-
-            <!-- Lock indicator dot -->
-            <circle id="lock-dot" cx="70" cy="15" r="5" class="lock-indicator locked"/>
-            <text x="70" y="19" text-anchor="middle" font-size="6" fill="#070b0f" font-family="Arial" font-weight="bold" id="lock-txt">🔒</text>
-
-            <!-- Door open indicators (arrows) -->
-            <g id="arrow-fl" style="display:none">
-              <path d="M28 75 L14 65 L14 85 Z" fill="var(--red)" opacity="0.8"/>
-            </g>
-            <g id="arrow-fr" style="display:none">
-              <path d="M112 75 L126 65 L126 85 Z" fill="var(--red)" opacity="0.8"/>
-            </g>
-            <g id="arrow-rl" style="display:none">
-              <path d="M28 135 L14 125 L14 145 Z" fill="var(--red)" opacity="0.8"/>
-            </g>
-            <g id="arrow-rr" style="display:none">
-              <path d="M112 135 L126 125 L126 145 Z" fill="var(--red)" opacity="0.8"/>
-            </g>
-
-            <!-- Frunk indicator -->
-            <g id="arrow-ft" style="display:none">
-              <path d="M60 26 L70 12 L80 26 Z" fill="var(--red)" opacity="0.8"/>
-            </g>
-            <!-- Trunk indicator -->
-            <g id="arrow-rt" style="display:none">
-              <path d="M60 168 L70 182 L80 168 Z" fill="var(--red)" opacity="0.8"/>
-            </g>
-          </svg>
-        </div>
-      </div>
+    <!-- CAR VISUAL -->
+    <div class="car-card">
+      <div class="car-card-hdr">Двери</div>
+      <svg class="car-svg" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="16" cy="38" rx="9" ry="6" class="wheel"/>
+        <ellipse cx="84" cy="38" rx="9" ry="6" class="wheel"/>
+        <ellipse cx="16" cy="122" rx="9" ry="6" class="wheel"/>
+        <ellipse cx="84" cy="122" rx="9" ry="6" class="wheel"/>
+        <rect x="22" y="22" width="56" height="116" rx="10" class="car-body"/>
+        <rect id="door-fl" x="24" y="40" width="23" height="38" rx="2" class="door"/>
+        <rect id="door-fr" x="53" y="40" width="23" height="38" rx="2" class="door"/>
+        <rect id="door-rl" x="24" y="82" width="23" height="34" rx="2" class="door"/>
+        <rect id="door-rr" x="53" y="82" width="23" height="34" rx="2" class="door"/>
+        <line x1="50" y1="40" x2="50" y2="116" class="door-line"/>
+        <line x1="24" y1="78" x2="76" y2="78" class="door-line"/>
+        <rect x="27" y="43" width="18" height="26" rx="2" class="car-window"/>
+        <rect x="55" y="43" width="18" height="26" rx="2" class="car-window"/>
+        <rect x="27" y="84" width="18" height="22" rx="2" class="car-window"/>
+        <rect x="55" y="84" width="18" height="22" rx="2" class="car-window"/>
+        <rect x="30" y="22" width="40" height="19" rx="6" class="car-roof"/>
+        <rect x="32" y="23" width="36" height="8" rx="3" class="car-window"/>
+        <rect x="32" y="112" width="36" height="8" rx="3" class="car-window"/>
+        <circle id="lock-dot" cx="50" cy="11" r="4" class="lock-ind locked"/>
+        <g id="arrow-fl" style="display:none"><path d="M20 55 L10 48 L10 62 Z" fill="#ff3355" opacity="0.9"/></g>
+        <g id="arrow-fr" style="display:none"><path d="M80 55 L90 48 L90 62 Z" fill="#ff3355" opacity="0.9"/></g>
+        <g id="arrow-rl" style="display:none"><path d="M20 97 L10 90 L10 104 Z" fill="#ff3355" opacity="0.9"/></g>
+        <g id="arrow-rr" style="display:none"><path d="M80 97 L90 90 L90 104 Z" fill="#ff3355" opacity="0.9"/></g>
+        <g id="arrow-ft" style="display:none"><path d="M42 19 L50 8 L58 19 Z" fill="#ff3355" opacity="0.9"/></g>
+        <g id="arrow-rt" style="display:none"><path d="M42 122 L50 133 L58 122 Z" fill="#ff3355" opacity="0.9"/></g>
+      </svg>
     </div>
   </div>
 </div>
@@ -292,39 +207,31 @@ const CLIENT_ID='a72ab671-8bc2-4470-9b7e-31de7fe81007';
 const CLIENT_SECRET='ta-secret.QNI3mfVtnFrtE9rt';
 const API_EU='https://fleet-api.prd.eu.vn.cloud.tesla.com';
 const UPD_MS=5*60*1000;
-
 let aToken='',rToken='',vId='',vVin='';
 let pollTmr=null,cdTmr=null,gpsWatch=null,cdSec=UPD_MS/1000;
-
 const px=u=>PROXY+'/?url='+encodeURIComponent(u);
 const $=id=>document.getElementById(id);
-
 function msg(t,c=''){$('msg').textContent=t;$('msg').className=c;}
 function showSetup(){$('setup').style.display='flex';$('dash').style.display='none';if(pollTmr)clearInterval(pollTmr);if(cdTmr)clearInterval(cdTmr);if(gpsWatch)navigator.geolocation.clearWatch(gpsWatch);}
-
-setInterval(()=>{const n=new Date();$('clk').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');},1000);
-
+setInterval(()=>{const n=new Date();$('clk').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');},1000);
 async function doRefresh(){
   const r=await fetch('https://auth.tesla.com/oauth2/v3/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grant_type:'refresh_token',client_id:CLIENT_ID,client_secret:CLIENT_SECRET,refresh_token:rToken})});
   if(!r.ok)throw new Error('Токен: '+r.status);
   const d=await r.json();
-  if(!d.access_token)throw new Error('Нет access_token');
+  if(!d.access_token)throw new Error('Нет токена');
   aToken=d.access_token;
   if(d.refresh_token){rToken=d.refresh_token;save();}
 }
-
 async function apig(path){
   let r=await fetch(px(API_EU+path),{headers:{'Authorization':'Bearer '+aToken}});
   if(r.status===401){await doRefresh();r=await fetch(px(API_EU+path),{headers:{'Authorization':'Bearer '+aToken}});}
   return r;
 }
-
 async function apip(path){
   let r=await fetch(px(API_EU+path),{method:'POST',headers:{'Authorization':'Bearer '+aToken,'Content-Type':'application/json'}});
   if(r.status===401){await doRefresh();r=await fetch(px(API_EU+path),{method:'POST',headers:{'Authorization':'Bearer '+aToken,'Content-Type':'application/json'}});}
   return r;
 }
-
 async function wake(){
   $('sleep').classList.add('show');
   try{
@@ -337,7 +244,6 @@ async function wake(){
     }
   }finally{$('sleep').classList.remove('show');}
 }
-
 async function poll(){
   try{
     const r=await apig('/api/1/vehicles/'+vVin+'/vehicle_data?endpoints=charge_state%3Bclimate_state%3Bdrive_state%3Bvehicle_state');
@@ -348,7 +254,6 @@ async function poll(){
     cdSec=UPD_MS/1000;
   }catch(e){$('dot').className='dot off';console.error(e);}
 }
-
 function startCD(){
   if(cdTmr)clearInterval(cdTmr);
   cdSec=UPD_MS/1000;
@@ -359,26 +264,19 @@ function startCD(){
     if(cdSec<=0)cdSec=UPD_MS/1000;
   },1000);
 }
-
 function updateDoors(vs){
-  const doors={fl:vs.df,fr:vs.pf,rl:vs.dr,rr:vs.pr,ft:vs.ft,rt:vs.rt};
-  for(const[k,v] of Object.entries(doors)){
-    const door=$('door-'+k);
-    const arrow=$('arrow-'+k);
-    if(door){door.className='door'+(v?' open':'');}
-    if(arrow){arrow.style.display=v?'block':'none';}
+  const map={fl:vs.df,fr:vs.pf,rl:vs.dr,rr:vs.pr,ft:vs.ft,rt:vs.rt};
+  for(const[k,v] of Object.entries(map)){
+    const d=$('door-'+k),a=$('arrow-'+k);
+    if(d)d.className='door'+(v?' open':'');
+    if(a)a.style.display=v?'block':'none';
   }
-  const locked=vs.locked;
   const dot=$('lock-dot');
-  const txt=$('lock-txt');
-  if(dot){dot.className='lock-indicator '+(locked?'locked':'unlocked');}
-  if(txt){txt.textContent=locked?'🔒':'🔓';}
+  if(dot)dot.className='lock-ind '+(vs.locked?'locked':'unlocked');
 }
-
 function render(r){
   const now=new Date();
   $('upd').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-
   const ch=r.charge_state||{};
   const pct=ch.battery_level||0;
   const km=Math.round((ch.est_battery_range||ch.battery_range||0)*1.60934);
@@ -387,27 +285,23 @@ function render(r){
   $('bbar').style.width=pct+'%';
   $('bbar').style.background=pct>50?'var(--accent2)':pct>20?'var(--orange)':'var(--red)';
   $('bpct').style.color=pct>50?'var(--accent2)':pct>20?'var(--orange)':'var(--red)';
-
   const isCh=ch.charging_state==='Charging';
   $('cbadge').style.display=isCh?'inline-block':'none';
   $('cst').textContent=isCh?'Заряжается':ch.charging_state==='Complete'?'Заряжен':ch.charging_state==='Disconnected'?'Откл.':ch.charging_state||'—';
   $('cst').className='info-v'+(isCh?' mid':'');
-
   const cl=r.climate_state||{};
   $('tin').textContent=cl.inside_temp!=null?cl.inside_temp.toFixed(1)+'°C':'—°C';
   $('tout').textContent=cl.outside_temp!=null?cl.outside_temp.toFixed(1)+'°C':'—°C';
-
   const dr=r.drive_state||{};
   const sh=dr.shift_state||'P';
-  const ge=$('gear');
-  ge.textContent=sh;ge.className='gear-val '+sh;
-
+  const ge=$('gear');ge.textContent=sh;ge.className='gear-val '+sh;
   const vs=r.vehicle_state||{};
-  $('odo').textContent=vs.odometer?Math.round(vs.odometer*1.60934).toLocaleString('ru')+' км':'— км';
-
+  $('odo').textContent=vs.odometer?Math.round(vs.odometer*1.60934).toLocaleString('ru')+' км':'—';
+  const lk=$('lck');
+  lk.textContent=vs.locked==null?'—':vs.locked?'Закрыт':'Открыт';
+  lk.className='info-v'+(vs.locked===false?' red':' grn');
   updateDoors(vs);
 }
-
 function gps(){
   if(!navigator.geolocation)return;
   gpsWatch=navigator.geolocation.watchPosition(p=>{
@@ -419,12 +313,9 @@ function gps(){
     $('gpslbl').className='speed-gps';
   },{enableHighAccuracy:true,maximumAge:1000,timeout:5000});
 }
-
 function save(){localStorage.setItem('tdc',JSON.stringify({rt:rToken,vid:vId,vin:vVin}));}
-
 async function connect(){
-  const rt=$('rt').value.trim();
-  const vid=$('vid').value.trim();
+  const rt=$('rt').value.trim(),vid=$('vid').value.trim();
   if(!rt||!vid){msg('Заполни все поля','err');return;}
   msg('Получаю токен...');
   rToken=rt;vId=vid;
@@ -442,12 +333,10 @@ async function connect(){
     $('dash').style.display='flex';
     gps();
     if(v.state!=='online')await wake();
-    await poll();
-    startCD();
+    await poll();startCD();
     pollTmr=setInterval(async()=>{await poll();startCD();},UPD_MS);
   }catch(e){msg('Ошибка: '+e.message,'err');}
 }
-
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/tesla-dash/sw.js').catch(()=>{});}
 window.onload=()=>{
   const s=localStorage.getItem('tdc');
