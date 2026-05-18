@@ -6,6 +6,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Tesla Dash</title>
+<link rel="manifest" href="/tesla-dash/manifest.json">
+<meta name="theme-color" content="#070b0f">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
 
@@ -446,6 +448,7 @@ async function connect(){
   }catch(e){msg('Ошибка: '+e.message,'err');}
 }
 
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/tesla-dash/sw.js').catch(()=>{});}
 window.onload=()=>{
   const s=localStorage.getItem('tdc');
   if(s){const c=JSON.parse(s);if(c.rt)$('rt').value=c.rt;if(c.vid)$('vid').value=c.vid;}
