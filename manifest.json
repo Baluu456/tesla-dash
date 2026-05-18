@@ -1,0 +1,18 @@
+{
+  "name": "Tesla Dash",
+  "short_name": "TeslaDash",
+  "description": "Tesla dashboard with GPS speed and battery info",
+  "start_url": "/tesla-dash/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#070b0f",
+  "theme_color": "#070b0f",
+  "icons": [
+    {
+      "src": "/tesla-dash/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

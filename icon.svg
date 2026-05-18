@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Background -->
+  <rect width="192" height="192" rx="40" fill="#070b0f"/>
+  
+  <!-- Grid lines -->
+  <line x1="0" y1="96" x2="192" y2="96" stroke="#00d4ff" stroke-width="0.5" opacity="0.15"/>
+  <line x1="96" y1="0" x2="96" y2="192" stroke="#00d4ff" stroke-width="0.5" opacity="0.15"/>
+  
+  <!-- Outer ring -->
+  <circle cx="96" cy="96" r="80" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.3"/>
+  
+  <!-- Speed arc -->
+  <path d="M 30 120 A 72 72 0 1 1 162 120" fill="none" stroke="#1a2535" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 30 120 A 72 72 0 1 1 162 120" fill="none" stroke="#00d4ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="56" opacity="0.8"/>
+  
+  <!-- Glow effect -->
+  <path d="M 30 120 A 72 72 0 1 1 162 120" fill="none" stroke="#00d4ff" stroke-width="12" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="56" opacity="0.15"/>
+
+  <!-- Lightning bolt -->
+  <path d="M 108 32 L 80 96 L 100 96 L 84 160 L 116 88 L 94 88 Z" fill="#c8f000" opacity="0.95"/>
+  <path d="M 108 32 L 80 96 L 100 96 L 84 160 L 116 88 L 94 88 Z" fill="none" stroke="#c8f000" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Center dot -->
+  <circle cx="96" cy="140" r="5" fill="#00d4ff" opacity="0.9"/>
+  <circle cx="96" cy="140" r="8" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+</svg>
